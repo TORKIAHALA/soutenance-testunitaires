@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\DepositFormType;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,12 +21,36 @@ class OperationController extends AbstractController
         ]);
     }
 
-    #[Route('/operation/{method}', name: 'app_operation', requirements: ['method' => 'deposit|withdraw'])]
-    public function index($method): Response
+    #[Route('/deposit', name: 'account_deposit')]
+    public function deposit(Request $request, EntityManagerInterface $em): Response
     {
-        return $this->render('operation/index.html.twig', [
+
+        $form = $this->createForm(DepositFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $em->getRepository(User::class)->find($request->get('user'));
+
+            if ($user->getBankAccount()->balanceValid($form->getData()['amount'])) {
+                $user->getBankAccount()->deposit($form->getData()['amount']);
+
+                $em->persist($user);
+                $em->flush();
+            };
+        }
+
+        return $this->render('operation/deposit.html.twig', [
             'controller_name' => 'OperationController',
-            'method' => $method,
+            'form' => $form->createView(),
+
+        ]);
+    }
+
+    #[Route('/withdraw', name: 'account_withdraw')]
+    public function withdraw(): Response
+    {
+        return $this->render('operation/withdraw.html.twig', [
+            'controller_name' => 'OperationController',
         ]);
     }
 }

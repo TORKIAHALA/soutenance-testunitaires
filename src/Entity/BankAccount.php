@@ -64,13 +64,31 @@ class BankAccount
         return $this;
     }
 
-    public function balanceValid(): bool
+    public function balanceValid(float $amount = 0): bool
     {
-        if ($this->balance >= 0  && $this->balance <= 1000) {
+        if ($this->balance + $amount >= 0  && $this->balance + $amount <= 1000) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public function deposit(float $amount): self
+    {
+        if ($this->balanceValid($amount)) {
+            $this->balance += $amount;
+        }
+
+        return $this;
+    }
+
+    public function withdraw(float $amount): self
+    {
+        if ($this->balanceValid($amount)) {
+            $this->balance -= $amount;
+        }
+
+        return $this;
     }
 
     public function sendEmail(\DateTime $date): bool
