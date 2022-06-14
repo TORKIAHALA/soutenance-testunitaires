@@ -63,4 +63,24 @@ class BankAccount
 
         return $this;
     }
+
+    public function balanceValid(): bool
+    {
+        if ($this->balance >= 0  && $this->balance <= 1000) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function sendEmail(\DateTime $date): bool
+    {
+        $dateStart = ($date)->setTime(22, 0);
+        $dateEnd = ($date)->setTime(6, 0);
+        if ($date >= $dateStart && $date <= $dateEnd) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
