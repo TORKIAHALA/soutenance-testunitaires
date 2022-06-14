@@ -77,6 +77,8 @@ class BankAccount
     {
         if ($this->balanceValid($amount)) {
             $this->balance += $amount;
+        } else {
+            $this->balance += 1000 - $this->balance;
         }
 
         return $this;
@@ -86,6 +88,8 @@ class BankAccount
     {
         if ($this->balanceValid($amount)) {
             $this->balance -= $amount;
+        } else {
+            $this->balance = 0;
         }
 
         return $this;
