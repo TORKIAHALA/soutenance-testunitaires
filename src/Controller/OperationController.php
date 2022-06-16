@@ -91,7 +91,8 @@ class OperationController extends AbstractController
         ]);
     }
 
-
+    #[Route('/email', name: 'app_email')]
+    
     private function sendEmail(User $user, string $route)
     {
         $this->emailVerifier->sendEmailConfirmation(
